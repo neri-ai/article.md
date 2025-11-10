@@ -1,0 +1,54 @@
+Table user_info {
+  user_id varchar(6) [pk]
+  password varchar(60)
+  name varchar(30)
+  email varchar(40)
+  auth char(1)
+  failed_login_count int
+  last_failed_login datetime
+  lock_level int
+}
+
+Table articles_info {
+  article_id varchar(6) [pk]
+  user_id varchar(6) [ref: > user_info.user_id]
+  title varchar(256)
+  view_count int
+  created_at datetime
+  updated_at datetime
+}
+
+Table article_contents {
+  contents_id varchar(6) [pk]
+  article_id varchar(6) [ref: > articles_info.article_id]
+  body text
+  version int [default: 0]
+  created_at datetime
+  updated_at datetime
+}
+
+Table article_likes {
+  user_id varchar(6) [ref: > user_info.user_id]
+  article_id varchar(6) [ref: > articles_info.article_id]
+  created_at datetime
+
+  Indexes {
+    (user_id, article_id) [pk]
+  }
+}
+
+Table classification_info {
+  classification_id varchar(6) [pk]
+  name varchar(100)
+  type enum('tag', 'category')
+  created_at datetime
+}
+
+Table article_classification {
+  article_id varchar(6) [ref: > articles_info.article_id]
+  classification_id varchar(6) [ref: > classification_info.classification_id]
+
+  Indexes {
+    (article_id, classification_id) [pk]
+  }
+}
